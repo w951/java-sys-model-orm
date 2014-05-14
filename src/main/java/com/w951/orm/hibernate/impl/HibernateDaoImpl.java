@@ -341,8 +341,13 @@ public class HibernateDaoImpl extends MyHibernateTemplate implements
 				Query query = session.createQuery(hql);
 				if (params != null) {
 					for (int i = 0; i < params.length; i++) {
-						query.setParameter(String.valueOf(params[i][0]),
-								params[i][1]);
+						if (params[i][1] instanceof Object[]) {
+							Object[] objs = (Object[]) params[i][1];
+							query.setParameterList(String.valueOf(params[i][0]), objs);
+						} else {
+							query.setParameter(String.valueOf(params[i][0]),
+									params[i][1]);
+						}
 					}
 				}
 				return query.executeUpdate();
